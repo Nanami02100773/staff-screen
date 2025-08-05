@@ -12,7 +12,7 @@ type Ticket = {
 const getNextTicketNumber = (tickets: Ticket[]): string => {
   // statusが"Done"以外の整理券番号を抽出
   const activeNumbers = tickets
-    .filter((t) => t.status !== "Done")
+    .filter((t) => t.status !== "終了")
     .map((t) => Number(t.ticket_number))
     .filter((n) => !isNaN(n));
   // 最大値を取得
