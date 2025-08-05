@@ -6,7 +6,17 @@
 .ticket-list {
   width: 65%;
   font-family: sans-serif;
-  margin: 50px 100px;
+  margin: 100px 100px;
+}
+
+.ticket-list ul {
+  max-height: 700px; /* スクロール可能にしたい高さを指定 */
+  overflow-y: auto;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border: 1px solid #ddd;
+  border-radius: 6px;
 }
 
 .ticket-id-header,
@@ -39,7 +49,7 @@
 
 .form-section{
     width: 45%;
-    margin: 50px 50px;
+    margin: 100px 50px;
 }
 
 

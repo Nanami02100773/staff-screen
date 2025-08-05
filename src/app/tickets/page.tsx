@@ -190,7 +190,6 @@ const handleUpdateStatus = async () => {
         </ul>
       </div>
       <div className="form-section">
-
         {/* 整理券発行フォーム */}
         <h1>整理券発行</h1>
         <div className="create-ticket-form">
