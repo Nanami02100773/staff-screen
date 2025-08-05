@@ -195,7 +195,7 @@ const handleUpdateStatus = async () => {
         <h1>整理券発行</h1>
         <div className="create-ticket-form">
           <label>
-            整理券番号:{" "}
+            整理券番号
             <input
               type="text"
               value={ticketNumber}
@@ -203,14 +203,39 @@ const handleUpdateStatus = async () => {
               placeholder="00"
             />
           </label>
-          <label>
-            人数:{" "}
-            <input
-              type="number"
-              min={1}
-              value={numberOfPeople}
-              onChange={(e) => setNumberOfPeople(Number(e.target.value))}
-            />
+          <label className="number-input-label">
+            人数
+            <div className="number-input-wrapper">
+              <input
+                type="text"
+                className="number-input"
+                value={numberOfPeople}
+                disabled={false}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  const num = parseInt(value, 10);
+                  if (!isNaN(num) && num >= 1) {
+                    setNumberOfPeople(num);
+                  } else {
+                    setNumberOfPeople(1);
+                  }
+                }}
+              />
+              <button
+                type="button"
+                className="number-button"
+                onClick={() => setNumberOfPeople((prev) => Number(prev) + 1)}
+              >
+                ＋
+              </button>
+              <button
+                type="button"
+                className="number-button"
+                onClick={() => setNumberOfPeople((prev) => Math.max(1, prev - 1))}
+              >
+                −
+              </button>
+            </div>
           </label>
           <button onClick={handleCreateTicket}>
             整理券発行
@@ -220,7 +245,7 @@ const handleUpdateStatus = async () => {
         <h1>整理券更新</h1>
         <div className="update-ticket-form">
           <label>
-            整理券ID:{" "}
+            整理券ID
             <input
               type="number"
               value={updateTicketID}
@@ -229,7 +254,7 @@ const handleUpdateStatus = async () => {
             />
           </label>
           <label>
-            状況:{" "}
+            状況
             <select
               value={updateStatus}
               onChange={(e) => setUpdateStatus(e.target.value)}

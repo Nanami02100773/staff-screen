@@ -158,3 +158,52 @@ h1 {
 h2 {
   font-size: 22px;
 }
+
+.number-input-label {
+  display: flex;
+  margin-bottom: 16px;
+  font-weight: 500;
+  font-size: 18px;
+  color: #333;
+}
+
+.number-input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.number-input {
+  padding: 10px 12px;
+  width: 100%;
+  font-size: 18px;
+  text-align: center;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  height: 42px;
+  box-sizing: border-box;
+}
+
+.number-button {
+  margin-top: 4px;
+  width: 42px;
+  height: 42px;
+  font-size: 18px;
+  font-weight: bold;
+  background-color: #f8f8f8; /* 白に近い色 */
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+  box-sizing: border-box;
+
+  /* 中央ぞろえを追加 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0; /* 必要なら余白を打ち消す */
+}
+
+.number-button:hover {
+  background-color: #eaeaea;
+}
