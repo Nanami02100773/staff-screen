@@ -115,6 +115,7 @@ const handleUpdateStatus = async () => {
         t.id === updateTicketID ? updatedTicket : t
       )
     );
+    setTicketNumber(getNextTicketNumber(tickets));
     setSuccessMessage("ステータスが正常に更新されました！");
   } catch (err: unknown) {
     setSuccessMessage("");
