@@ -33,6 +33,7 @@ const TicketListPage: React.FC = () => {
   const [numberOfPeople, setNumberOfPeople] = useState<number>(1);
   const [successMessage, setSuccessMessage] = useState<string>("");
   const [updateTicketID, setUpdateTicketID] = useState<number>(0);
+  const [deleteTicketID, setDeleteTicketID] = useState<number>(0);
   const [updateStatus, setUpdateStatus] = useState<string>("未呼び出し");
 
   // 整理券発行処理を関数化
@@ -119,6 +120,38 @@ const TicketListPage: React.FC = () => {
       setSuccessMessage("ステータスが正常に更新されました！");
     } catch (err: unknown) {
       setSuccessMessage("");
+      alert(
+        err instanceof Error
+          ? err.message
+          : "不明なエラーが発生しました"
+      );
+    }
+  };
+
+  const ticketsHardDelete = async () => {
+    const result = window.confirm('本当に削除しますか？\n行番号: ' + deleteTicketID);
+    if (!result) return; // キャンセルされた場合は処理を中止
+    try {
+      const res = await fetch(
+        "https://fastapi-on-vercel-pi.vercel.app/api/ticket/" + deleteTicketID,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            "accept": "application/json",
+            "x-vercel-protection-bypass": process.env.NEXT_PUBLIC_VERCEL_PROTECTION_BYPASS ?? "",
+          },
+        }
+      );
+      if (!res.ok) throw new Error("整理券発行に失敗しました");
+
+      setTicketNumber(getNextTicketNumber(tickets));
+      alert(
+        "正常に削除されました"
+      );
+      window.location.reload();
+    } catch (err: unknown) {
+      setSuccessMessage(""); // 失敗時はメッセージを消す
       alert(
         err instanceof Error
           ? err.message
@@ -267,6 +300,21 @@ const TicketListPage: React.FC = () => {
           </label>
           <button onClick={handleUpdateStatus}>
             更新
+          </button>
+        </div>
+        {/* 削除フォーム */}
+        <h1>整理券削除</h1>
+        <div className="delete-ticket-form">
+          <label>
+            行番号
+            <input
+              type="number"
+              value={deleteTicketID}
+              onChange={(e) => setDeleteTicketID(Number(e.target.value))}
+            />
+          </label>
+          <button onClick={ticketsHardDelete}>
+            削除
           </button>
         </div>
         {/* 成功メッセージ表示 */}
