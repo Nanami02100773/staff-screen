@@ -70,62 +70,62 @@ const TicketListPage: React.FC = () => {
     }
   };
 
-const handleUpdateStatus = async () => {
-  let updateNumberOfPeople = 0;
-  let updateTicketNumber = "";
-  for (const ticket of tickets) {
-    if (ticket.id === updateTicketID) {
-      // 更新対象の整理券が見つかった場合 
-      updateTicketNumber = ticket.ticket_number;
-      updateNumberOfPeople = ticket.number_of_people;
-      break;
-    }
-  }
-  if (updateTicketNumber === "") {
-    alert("指定された整理券IDが見つかりません");
-    return;
-  }
-  try {
-    console.log("Updating ticket:", {
-      id: updateTicketID,
-      ticket_number: updateTicketNumber,
-      number_of_people: updateNumberOfPeople,
-      status: updateStatus,
-    });
-    const res = await fetch(
-      `https://fastapi-on-vercel-pi.vercel.app/api/ticket/${updateTicketID}`,
-      {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          "accept": "application/json",
-          "x-vercel-protection-bypass": process.env.NEXT_PUBLIC_VERCEL_PROTECTION_BYPASS ?? "",
-        },
-        body: JSON.stringify({
-          ticket_number: updateTicketNumber,
-          number_of_people: updateNumberOfPeople,
-          status: updateStatus,
-        }),
+  const handleUpdateStatus = async () => {
+    let updateNumberOfPeople = 0;
+    let updateTicketNumber = "";
+    for (const ticket of tickets) {
+      if (ticket.id === updateTicketID) {
+        // 更新対象の整理券が見つかった場合 
+        updateTicketNumber = ticket.ticket_number;
+        updateNumberOfPeople = ticket.number_of_people;
+        break;
       }
-    );
-    if (!res.ok) throw new Error("ステータス更新に失敗しました");
-    const updatedTicket = await res.json();
-    setTickets(
-      tickets.map((t) =>
-        t.id === updateTicketID ? updatedTicket : t
-      )
-    );
-    setTicketNumber(getNextTicketNumber(tickets));
-    setSuccessMessage("ステータスが正常に更新されました！");
-  } catch (err: unknown) {
-    setSuccessMessage("");
-    alert(
-      err instanceof Error
-        ? err.message
-        : "不明なエラーが発生しました"
-    );
-  }
-};
+    }
+    if (updateTicketNumber === "") {
+      alert("指定された整理券IDが見つかりません");
+      return;
+    }
+    try {
+      console.log("Updating ticket:", {
+        id: updateTicketID,
+        ticket_number: updateTicketNumber,
+        number_of_people: updateNumberOfPeople,
+        status: updateStatus,
+      });
+      const res = await fetch(
+        `https://fastapi-on-vercel-pi.vercel.app/api/ticket/${updateTicketID}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            "accept": "application/json",
+            "x-vercel-protection-bypass": process.env.NEXT_PUBLIC_VERCEL_PROTECTION_BYPASS ?? "",
+          },
+          body: JSON.stringify({
+            ticket_number: updateTicketNumber,
+            number_of_people: updateNumberOfPeople,
+            status: updateStatus,
+          }),
+        }
+      );
+      if (!res.ok) throw new Error("ステータス更新に失敗しました");
+      const updatedTicket = await res.json();
+      setTickets(
+        tickets.map((t) =>
+          t.id === updateTicketID ? updatedTicket : t
+        )
+      );
+      setTicketNumber(getNextTicketNumber(tickets));
+      setSuccessMessage("ステータスが正常に更新されました！");
+    } catch (err: unknown) {
+      setSuccessMessage("");
+      alert(
+        err instanceof Error
+          ? err.message
+          : "不明なエラーが発生しました"
+      );
+    }
+  };
 
   useEffect(() => {
     const fetchTickets = async () => {
