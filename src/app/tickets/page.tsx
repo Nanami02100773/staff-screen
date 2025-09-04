@@ -61,6 +61,7 @@ const TicketListPage: React.FC = () => {
       setTickets([...tickets, newTicket]);
       setTicketNumber(getNextTicketNumber([...tickets, newTicket]));
       setSuccessMessage("整理券が正常に発行されました！");
+      window.location.reload();
     } catch (err: unknown) {
       setSuccessMessage(""); // 失敗時はメッセージを消す
       alert(
@@ -118,6 +119,7 @@ const TicketListPage: React.FC = () => {
       );
       setTicketNumber(getNextTicketNumber(tickets));
       setSuccessMessage("ステータスが正常に更新されました！");
+      window.location.reload();
     } catch (err: unknown) {
       setSuccessMessage("");
       alert(
@@ -203,8 +205,8 @@ const TicketListPage: React.FC = () => {
         <h1>整理券一覧</h1>
         <ul>
           <div className="ticket-id-header">
-            <div>整理券ID</div>
-            <div>番号</div>
+            <div>行番号</div>
+            <div>整理券番号</div>
             <div>人数</div>
             <div>ステータス</div>
           </div>
@@ -278,7 +280,7 @@ const TicketListPage: React.FC = () => {
         <h1>整理券更新</h1>
         <div className="update-ticket-form">
           <label>
-            整理券ID
+            行番号
             <input
               type="number"
               value={updateTicketID}
@@ -287,7 +289,7 @@ const TicketListPage: React.FC = () => {
             />
           </label>
           <label>
-            状況
+            ステータス
             <select
               value={updateStatus}
               onChange={(e) => setUpdateStatus(e.target.value)}
