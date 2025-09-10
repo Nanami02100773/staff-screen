@@ -36,6 +36,35 @@ const TicketListPage: React.FC = () => {
   const [deleteTicketID, setDeleteTicketID] = useState<number>(0);
   const [updateStatus, setUpdateStatus] = useState<string>("未呼び出し");
 
+  //整理券テーブル初期化処理を関数化
+  const handleInitializeTickets = async () => {
+    const result = window.confirm('本当にテーブルを初期化しますか？\n全てのデータが削除されます');
+    if (!result) return; // キャンセルされた場合は処理を中止
+    try {
+      const res = await fetch(
+        "https://fastapi-on-vercel-pi.vercel.app/api/tickets/clear",
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            "accept": "application/json",
+            "x-vercel-protection-bypass": process.env.NEXT_PUBLIC_VERCEL_PROTECTION_BYPASS ?? "",
+          },
+        }
+      );
+      if (!res.ok) throw new Error("テーブル初期化に失敗しました");
+
+      window.location.reload();
+    } catch (err: unknown) {
+      setSuccessMessage(""); // 失敗時はメッセージを消す
+      alert(
+        err instanceof Error
+          ? err.message
+          : "不明なエラーが発生しました"
+      );
+    }
+  };
+
   // 整理券発行処理を関数化
   const handleCreateTicket = async () => {
     try {
@@ -224,6 +253,9 @@ const TicketListPage: React.FC = () => {
             </li>
           ))}
         </ul>
+        <button onClick={handleInitializeTickets}>
+          テーブル初期化
+        </button>
       </div>
       <div className="form-section">
         {/* 整理券発行フォーム */}

@@ -47,6 +47,18 @@
   display: contents; /* グリッドの中でlabelの中身だけを反映させる */
 }
 
+.ticket-list button {
+  align-self: flex-start;
+  margin: 20px 0;
+  padding: 10px 20px;
+  background-color: #ff4848;
+  color: white;
+  font-size: 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
 .form-section{
     width: 45%;
     margin: 60px 50px;
