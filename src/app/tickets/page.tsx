@@ -328,7 +328,7 @@ const TicketListPage: React.FC = () => {
               onChange={(e) => setUpdateStatus(e.target.value)}
             >
               <option value="未呼び出し">未呼び出し</option>
-              <option value="呼び出し中">呼び出し中</option>
+              <option value="呼び出し中">待合室呼び出し中</option>
               <option value="待合室">待合室</option>
               <option value="終了">終了</option>
             </select>
