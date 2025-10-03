@@ -10,7 +10,7 @@ type Ticket = {
 };
 
 const getNextTicketNumber = (tickets: Ticket[]): string => {
-  if (tickets.length === 0) return "01"; // 最初の整理券番号
+  if (tickets.length === 0) return "1"; // 最初の整理券番号
   // statusが"Done"以外の整理券番号を抽出
   const activeNumbers = tickets
     .filter((t) => t.status !== "終了")
@@ -21,7 +21,7 @@ const getNextTicketNumber = (tickets: Ticket[]): string => {
 
 
   // 2桁ゼロ埋め
-  return nextNumber.toString().padStart(2, "0");
+  return nextNumber.toString();
 };
 
 
@@ -254,7 +254,7 @@ const TicketListPage: React.FC = () => {
               type="text"
               value={ticketNumber}
               onChange={(e) => setTicketNumber(e.target.value)}
-              placeholder="00"
+              placeholder="0"
             />
           </label>
           <label className="number-input-label">
