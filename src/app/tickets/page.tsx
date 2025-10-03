@@ -43,7 +43,7 @@ const TicketListPage: React.FC = () => {
     if (!result) return; // キャンセルされた場合は処理を中止
     try {
       const res = await fetch(
-        "https://fastapi-on-vercel-pi.vercel.app/api/tickets/clear",
+        "https://staff-backend-orpin.vercel.app/api/tickets/clear",
         {
           method: "PUT",
           headers: {
@@ -70,7 +70,7 @@ const TicketListPage: React.FC = () => {
   const handleCreateTicket = async () => {
     try {
       const res = await fetch(
-        "https://fastapi-on-vercel-pi.vercel.app/api/ticket",
+        "https://staff-backend-orpin.vercel.app/api/ticket",
         {
           method: "POST",
           headers: {
@@ -125,7 +125,7 @@ const TicketListPage: React.FC = () => {
         status: updateStatus,
       });
       const res = await fetch(
-        `https://fastapi-on-vercel-pi.vercel.app/api/ticket/${updateTicketID}`,
+        `https://staff-backend-orpin.vercel.app/api/ticket/${updateTicketID}`,
         {
           method: "PUT",
           headers: {
@@ -165,7 +165,7 @@ const TicketListPage: React.FC = () => {
     if (!result) return; // キャンセルされた場合は処理を中止
     try {
       const res = await fetch(
-        "https://fastapi-on-vercel-pi.vercel.app/api/ticket/" + deleteTicketID,
+        "https://staff-backend-orpin.vercel.app/api/ticket/" + deleteTicketID,
         {
           method: "DELETE",
           headers: {
@@ -196,7 +196,7 @@ const TicketListPage: React.FC = () => {
     const fetchTickets = async () => {
       try {
         const res = await fetch(
-          "https://fastapi-on-vercel-pi.vercel.app/api/tickets",
+          "https://staff-backend-orpin.vercel.app/api/tickets",
           {
             method: "GET",
             headers: {
