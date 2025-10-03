@@ -87,10 +87,7 @@ const TicketListPage: React.FC = () => {
       );
       if (!res.ok) throw new Error("整理券発行に失敗しました");
 
-      // const newTicket = await res.json();
-      // setTickets([...tickets, newTicket]);
-      // setTicketNumber(getNextTicketNumber([...tickets, newTicket]));
-      // setSuccessMessage("整理券が正常に発行されました！");
+      
       window.location.reload();
     } catch (err: unknown) {
       setSuccessMessage(""); // 失敗時はメッセージを消す
@@ -141,14 +138,7 @@ const TicketListPage: React.FC = () => {
         }
       );
       if (!res.ok) throw new Error("ステータス更新に失敗しました");
-      // const updatedTicket = await res.json();
-      // setTickets(
-      //   tickets.map((t) =>
-      //     t.id === updateTicketID ? updatedTicket : t
-      //   )
-      // );
-      // setTicketNumber(getNextTicketNumber(tickets));
-      // setSuccessMessage("ステータスが正常に更新されました！");
+  
       window.location.reload();
     } catch (err: unknown) {
       setSuccessMessage("");
@@ -177,10 +167,6 @@ const TicketListPage: React.FC = () => {
       );
       if (!res.ok) throw new Error("整理券発行に失敗しました");
 
-      // setTicketNumber(getNextTicketNumber(tickets));
-      // alert(
-      //   "正常に削除されました"
-      // );
       window.location.reload();
     } catch (err: unknown) {
       setSuccessMessage(""); // 失敗時はメッセージを消す
