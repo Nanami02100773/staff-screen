@@ -38,18 +38,48 @@ const TicketListPage: React.FC = () => {
   const [updateTicketID, setUpdateTicketID] = useState<number>(0);
   const [deleteTicketID, setDeleteTicketID] = useState<number>(0);
   const [updateStatus, setUpdateStatus] = useState<string>("未呼び出し");
-  // チェック状態を管理
-  const [checkedItems, setCheckedItems] = useState<{[key: number]: boolean}>({});
 
-  // 難易度を管理
-  const [difficulties, setDifficulties] = useState<{[key: number]: string}>({});
+
+  // ↓↓↓↓↓ 平野変更箇所 ↓↓↓↓↓ //
+
+   // LocalStorageから初期値を読み込み（チェックボックス）
+  const [checkedItems, setCheckedItems] = useState<{[key: number]: boolean}>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('checkedItems');
+      return saved ? JSON.parse(saved) : {};
+    }
+    return {};
+  });
+
+  // LocalStorageから初期値を読み込み（難易度）
+  const [difficulties, setDifficulties] = useState<{[key: number]: string}>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('difficulties');
+      return saved ? JSON.parse(saved) : {};
+    }
+    return {};
+  });
+
+  // チェック状態が変更されたらLocalStorageに保存
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('checkedItems', JSON.stringify(checkedItems));
+    }
+  }, [checkedItems]);
+
+  // 難易度が変更されたらLocalStorageに保存
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('difficulties', JSON.stringify(difficulties));
+    }
+  }, [difficulties]);
 
   // 追加関数：データベースから情報を取得する。
   // window.location.reload()と置き換える。
   // 理由: 画面リロードを行うとフロントだけで定義している変数は削除される
   // 　　　また、バックエンド側を変更はできない。
   // 　　　→ リロードの代わりに変更を反映するための処理を追加。
-  const fetchTickets = async () => {
+  const updateFetchTickets = async () => {
   try {
     const res = await fetch(
       "https://staff-backend-orpin.vercel.app/api/tickets",
@@ -73,6 +103,11 @@ const TicketListPage: React.FC = () => {
   }
 };
 
+
+
+
+  // ↑↑↑↑↑ 平野変更箇所 ↑↑↑↑↑ //
+
   //整理券テーブル初期化処理を関数化
   const handleInitializeTickets = async () => {
     const result = window.confirm('本当にテーブルを初期化しますか？\n全てのデータが削除されます');
@@ -91,8 +126,14 @@ const TicketListPage: React.FC = () => {
       );
       if (!res.ok) throw new Error("テーブル初期化に失敗しました");
 
+      // LocalStorageもクリア（平野追加）
+      localStorage.removeItem('checkedItems');
+      localStorage.removeItem('difficulties');
+      setCheckedItems({});
+      setDifficulties({});
+
       // window.location.reload();
-      await fetchTickets(); // ← リロードの代わり
+      await updateFetchTickets(); // ← リロードの代わり
     } catch (err: unknown) {
       setSuccessMessage(""); // 失敗時はメッセージを消す
       alert(
@@ -126,7 +167,7 @@ const TicketListPage: React.FC = () => {
 
       
       // window.location.reload();
-      await fetchTickets(); // ← リロードの代わり
+      await updateFetchTickets(); // ← リロードの代わり
     } catch (err: unknown) {
       setSuccessMessage(""); // 失敗時はメッセージを消す
       alert(
@@ -178,7 +219,7 @@ const TicketListPage: React.FC = () => {
       if (!res.ok) throw new Error("ステータス更新に失敗しました");
   
       // window.location.reload();
-      await fetchTickets(); // ← リロードの代わり
+      await updateFetchTickets(); // ← リロードの代わり
     } catch (err: unknown) {
       setSuccessMessage("");
       alert(
@@ -205,9 +246,17 @@ const TicketListPage: React.FC = () => {
         }
       );
       if (!res.ok) throw new Error("整理券発行に失敗しました");
+            
+      // 削除した整理券のチェックと難易度も削除（平野追加）
+      const newChecked = { ...checkedItems };
+      const newDifficulties = { ...difficulties };
+      delete newChecked[deleteTicketID];
+      delete newDifficulties[deleteTicketID];
+      setCheckedItems(newChecked);
+      setDifficulties(newDifficulties);
 
       // window.location.reload();
-      await fetchTickets(); // ← リロードの代わり
+      await updateFetchTickets(); // ← リロードの代わり
     } catch (err: unknown) {
       setSuccessMessage(""); // 失敗時はメッセージを消す
       alert(
@@ -282,15 +331,15 @@ const TicketListPage: React.FC = () => {
 
               {/* 難易度選択 */}
               <div className="flex justify-center">
-                <select name="difficulty"
-                value={difficulties[ticket.id] || "-"}
+                <select name="difficulty" value={difficulties[ticket.id] || "-"}
                 onChange={(e) => {
-                  setDifficulties({
-                    ...difficulties,
-                    [ticket.id]: e.target.value
-                  });
-                }}
-                >
+                    e.stopPropagation();
+                    setDifficulties({
+                      ...difficulties,
+                      [ticket.id]: e.target.value
+                    });
+                  }}
+                  onClick={(e) => e.stopPropagation()}>
                   <option value="-">-</option>
                   <option value="A">A</option>
                   <option value="B">B</option>
@@ -300,17 +349,16 @@ const TicketListPage: React.FC = () => {
 
               {/* チェックボックス */}
               <div className="mx-auto">
-                <input type="checkbox"
-                checked={checkedItems[ticket.id] || false}
-                onChange={(e) => {
-                  setCheckedItems({
-                    ...checkedItems,
-                    [ticket.id]: e.target.checked
-                  });
-                }}
-                />
+                <input className="size-5" type="checkbox" checked={checkedItems[ticket.id] || false}
+                  onChange={(e) => {
+                    e.stopPropagation();
+                    setCheckedItems({
+                      ...checkedItems,
+                      [ticket.id]: e.target.checked
+                    });
+                  }}
+                  onClick={(e) => e.stopPropagation()}/>
               </div>
-              
             </li>
           ))}
         </ul>
@@ -365,9 +413,10 @@ const TicketListPage: React.FC = () => {
               </button>
             </div>
           </label>
-          <button onClick={handleCreateTicket}>
-            整理券発行
-          </button>
+            <button onClick={handleCreateTicket}>
+              整理券発行
+            </button>
+            <span className="relative pl-2 text-xs">発行を押してから画面に反映されるまで少し時間を要します</span>
         </div>
         {/* 更新フォーム */}
         <h1>整理券更新</h1>
