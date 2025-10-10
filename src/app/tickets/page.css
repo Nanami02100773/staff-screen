@@ -22,7 +22,7 @@
 .ticket-id-header,
 .ticket-row {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr; /* 整理券ID, 番号, 人数, ステータス */
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr; /* 整理券ID, 番号, 人数, ステータス, 難易度, 来たかどうか */
   padding: 10px;
   border-bottom: 1px solid #ccc;
   align-items: center;
