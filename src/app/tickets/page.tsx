@@ -7,7 +7,9 @@ type Ticket = {
   ticket_number: string;
   number_of_people: number;
   status: string;
+  check: string;
 };
+
 
 const getNextTicketNumber = (tickets: Ticket[]): string => {
   if (tickets.length === 0) return "1"; // 最初の整理券番号
@@ -37,6 +39,35 @@ const TicketListPage: React.FC = () => {
   const [deleteTicketID, setDeleteTicketID] = useState<number>(0);
   const [updateStatus, setUpdateStatus] = useState<string>("未呼び出し");
 
+  // 平野追加関数：データベースから情報を取得する。
+  // window.location.reload()と置き換える。
+  // 理由: 画面リロードを行うとフロントだけで定義している変数は削除される
+  // 　　　また、バックエンド側を変更はできない。
+  // 　　　→ リロードの代わりに変更を反映するための処理を追加。
+  const fetchTickets = async () => {
+  try {
+    const res = await fetch(
+      "https://staff-backend-orpin.vercel.app/api/tickets",
+      {
+        method: "GET",
+        headers: {
+          "accept": "application/json",
+          "x-vercel-protection-bypass": process.env.NEXT_PUBLIC_VERCEL_PROTECTION_BYPASS ?? "",
+        },
+      }
+    );
+    if (!res.ok) throw new Error("データの取得に失敗しました");
+    const data: Ticket[] = await res.json();
+    const sortedTickets = data.sort((a, b) => a.id - b.id);
+    setTickets(sortedTickets);
+    setTicketNumber(getNextTicketNumber(sortedTickets));
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      setError(err.message);
+    }
+  }
+};
+
   //整理券テーブル初期化処理を関数化
   const handleInitializeTickets = async () => {
     const result = window.confirm('本当にテーブルを初期化しますか？\n全てのデータが削除されます');
@@ -55,7 +86,8 @@ const TicketListPage: React.FC = () => {
       );
       if (!res.ok) throw new Error("テーブル初期化に失敗しました");
 
-      window.location.reload();
+      // window.location.reload();
+      await fetchTickets(); // ← リロードの代わり
     } catch (err: unknown) {
       setSuccessMessage(""); // 失敗時はメッセージを消す
       alert(
@@ -88,7 +120,8 @@ const TicketListPage: React.FC = () => {
       if (!res.ok) throw new Error("整理券発行に失敗しました");
 
       
-      window.location.reload();
+      // window.location.reload();
+      await fetchTickets(); // ← リロードの代わり
     } catch (err: unknown) {
       setSuccessMessage(""); // 失敗時はメッセージを消す
       alert(
@@ -139,7 +172,8 @@ const TicketListPage: React.FC = () => {
       );
       if (!res.ok) throw new Error("ステータス更新に失敗しました");
   
-      window.location.reload();
+      // window.location.reload();
+      await fetchTickets(); // ← リロードの代わり
     } catch (err: unknown) {
       setSuccessMessage("");
       alert(
@@ -167,7 +201,8 @@ const TicketListPage: React.FC = () => {
       );
       if (!res.ok) throw new Error("整理券発行に失敗しました");
 
-      window.location.reload();
+      // window.location.reload();
+      await fetchTickets(); // ← リロードの代わり
     } catch (err: unknown) {
       setSuccessMessage(""); // 失敗時はメッセージを消す
       alert(
@@ -225,6 +260,8 @@ const TicketListPage: React.FC = () => {
             <div>整理券番号</div>
             <div>人数</div>
             <div>ステータス</div>
+            <div>難易度</div>
+            <div>チェックリスト</div>
           </div>
           {tickets.map((ticket) => (
             <li 
@@ -237,6 +274,17 @@ const TicketListPage: React.FC = () => {
               <div>{ticket.ticket_number}</div>
               <div>{ticket.number_of_people}</div>
               <div>{ticket.status}</div>
+              <div className="flex justify-center">
+                <select name="difficulty">
+                  <option>-</option>
+                  <option>A</option>
+                  <option>B</option>
+                  <option>C</option>
+                </select>
+              </div>
+              <div className="mx-auto">
+                <input type="checkbox" />
+              </div>
             </li>
           ))}
         </ul>
