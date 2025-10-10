@@ -38,8 +38,13 @@ const TicketListPage: React.FC = () => {
   const [updateTicketID, setUpdateTicketID] = useState<number>(0);
   const [deleteTicketID, setDeleteTicketID] = useState<number>(0);
   const [updateStatus, setUpdateStatus] = useState<string>("未呼び出し");
+  // チェック状態を管理
+  const [checkedItems, setCheckedItems] = useState<{[key: number]: boolean}>({});
 
-  // 平野追加関数：データベースから情報を取得する。
+  // 難易度を管理
+  const [difficulties, setDifficulties] = useState<{[key: number]: string}>({});
+
+  // 追加関数：データベースから情報を取得する。
   // window.location.reload()と置き換える。
   // 理由: 画面リロードを行うとフロントだけで定義している変数は削除される
   // 　　　また、バックエンド側を変更はできない。
@@ -274,17 +279,38 @@ const TicketListPage: React.FC = () => {
               <div>{ticket.ticket_number}</div>
               <div>{ticket.number_of_people}</div>
               <div>{ticket.status}</div>
+
+              {/* 難易度選択 */}
               <div className="flex justify-center">
-                <select name="difficulty">
-                  <option>-</option>
-                  <option>A</option>
-                  <option>B</option>
-                  <option>C</option>
+                <select name="difficulty"
+                value={difficulties[ticket.id] || "-"}
+                onChange={(e) => {
+                  setDifficulties({
+                    ...difficulties,
+                    [ticket.id]: e.target.value
+                  });
+                }}
+                >
+                  <option value="-">-</option>
+                  <option value="A">A</option>
+                  <option value="B">B</option>
+                  <option value="C">C</option>
                 </select>
               </div>
+
+              {/* チェックボックス */}
               <div className="mx-auto">
-                <input type="checkbox" />
+                <input type="checkbox"
+                checked={checkedItems[ticket.id] || false}
+                onChange={(e) => {
+                  setCheckedItems({
+                    ...checkedItems,
+                    [ticket.id]: e.target.checked
+                  });
+                }}
+                />
               </div>
+              
             </li>
           ))}
         </ul>
